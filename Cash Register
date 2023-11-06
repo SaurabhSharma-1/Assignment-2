@@ -1,0 +1,61 @@
+function checkCashRegister(price, cash, cid) {
+  let adjust=cash-price;
+  let temp = [0,0,0,0,0,0,0,0,0];
+  let currName = ["PENNY","NICKEL","DIME","QUARTER","ONE","FIVE","TEN","TWENTY","ONE HUNDRED"];
+
+  let currVal = cid.map(elem=>{
+    return elem[1];
+  })
+  let currency = [0.01,0.05,0.1,0.25,1,5,10,20,100];
+  console.log(adjust);
+  console.log(currVal);
+
+  for(let i=currency.length-1;i>=0;i--){
+    
+      while(adjust>=currency[i] && currVal[i]!==0){
+      adjust=adjust-currency[i];
+      adjust=Math.round(adjust * 100) / 100;
+      currVal[i]-=currency[i];
+      temp[i]+=currency[i];
+      temp[i]=Math.round(temp[i] * 100) / 100
+      }
+  }
+
+  let drawer = {
+    status:"",
+    change:[]
+  }
+  const isAllZero = currVal.every(item =>item===0    || item<0);
+
+
+  if(isAllZero && adjust===0){
+    drawer.status = "CLOSED";
+    for(let i=0;i<currVal.length;i++){
+    let short = [];
+      short.push(currName[i]);
+      short.push(temp[i]);
+      drawer.change.push(short)
+    }
+  }
+  else if(adjust===0){
+    drawer.status = "OPEN";
+    for(let i=currVal.length-1;i>=0;i--){
+    let short = [];
+    if(temp[i]!==0){
+      short.push(currName[i]);
+      short.push(temp[i]);
+      drawer.change.push(short)
+    }
+    }
+  }
+  else{
+    drawer.status = "INSUFFICIENT_FUNDS";
+    drawer.change = [];
+  }
+
+  console.log(drawer);
+  
+  return drawer;
+}
+
+checkCashRegister(19.5, 20, [["PENNY", 0.5], ["NICKEL", 0], ["DIME", 0], ["QUARTER", 0], ["ONE", 0], ["FIVE", 0], ["TEN", 0], ["TWENTY", 0], ["ONE HUNDRED", 0]])
